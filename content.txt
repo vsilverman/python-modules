@@ -1,0 +1,3 @@
+This is a sample
+text content file,
+containing 03 lines
