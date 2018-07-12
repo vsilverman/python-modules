@@ -13,19 +13,35 @@ Created on May 8, 2018
 '''
 import my_files
 import os
+import platform
 import sys
 import subprocess
 
-my_folder = "d:/workspace-eclipse-4.6/python-modules/src/root/nested/"
-my_script = "call-from-python.cmd"
-
 def my_python_art(cfgfn):
     print ("PropFile: " + cfgfn)
+#   default properties are dependent on the platform
+    my_default_folder, my_default_script = get_default_properties()
     my_props=my_files.read_properties(cfgfn)
-    my_folder=my_props["part.folder"]
-    my_script=my_props["part.script"]
+#    my_folder=my_props["part.folder"]
+    my_folder=my_props.get("part.folder", my_default_folder)
+    my_script=my_props.get("part.script", my_default_script)
     process(my_folder, my_script)
     
+
+def get_default_properties():
+    '''
+        This function determins default
+        property values depending on the
+        type of the platform this ART
+        framework is running on (e.g.
+        Windows vs Linux/Mac platforms)
+        '''
+    os_name = platform.system()
+    if os_name.startswith("Linux") or os_name.startswith("Darwin"):
+        return "/path/to/my_folder", "call-from-python.sh"
+    else:
+        return "d:/", "call-from-python.cmd"
+
     
 def process(folder_name, script_name):
     '''
@@ -38,25 +54,26 @@ def process(folder_name, script_name):
     for dirpath, dirs, files in os.walk(folder_name):
         print("[D] : " + dirpath)
         for file in files:
-#            print("[F] : " + os.path.join(dirpath, file))
             print("[F] : " + file)
             if file.endswith(script_name):
+                # add absolute path to the filename
                 filepath = os.path.join(dirpath, file)
-#				 paraemeters to be passed to subprocess
-#				 may be defined in the 2nd parameter, e.g.
-#                subprocess.call(["mycurl.cmd", "-help"])
-                subprocess.call([script_name, ""])
-    
+                #                 paraemeters to be passed to subprocess
+                #                 may be defined in the 2nd parameter, e.g.
+                #                subprocess.call(["mycurl.cmd", "-help"])
+                subprocess.call([filepath, ""])
+
 
 def main():
     if __name__ == '__main__':
-        PropFile = my_folder + "p-art.cfg"
-        if len(sys.argv)<2:
+        PropFile = "./" + "part.cfg"
+        if len(sys.argv) < 2:
             print ("Usage: python my_art.py PropFile")
             print ("Running demo version with default params")
         else:
             PropFile = sys.argv[1]
         my_python_art(PropFile)
+
 	
 main()
 		
