@@ -15,7 +15,7 @@ import random
 import unittest
 
 
-class TestDictMethods(unittest.TestCase):
+class TestDistMethods(unittest.TestCase):
     myString = "Moscow Portland Boston Sunnyvale Moscow Denver Chicago Boston Washington Miami"
     myRandomNmb = random.randint(1, 10)
     w1 = "Moscow"
@@ -53,6 +53,7 @@ class TestDictMethods(unittest.TestCase):
         pass
 
     def test_case_1(self):
+        # this test_case uses default data for testing
         d = self.find_distance()
         self.assertEqual(2, d, "Distance is incorrect")
 
